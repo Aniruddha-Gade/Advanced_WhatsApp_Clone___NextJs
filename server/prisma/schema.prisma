@@ -8,9 +8,9 @@ datasource db {
 }
 
 model User {
-  id Int @id @map("_id")
-  email String @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email String   @unique
   name String
   profileImage String @default("")
-  about String @defalut("")
+  about  String   @default("")
 }
