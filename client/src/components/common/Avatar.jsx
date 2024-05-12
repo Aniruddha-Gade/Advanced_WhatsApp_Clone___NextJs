@@ -4,6 +4,7 @@ import { FaCamera } from 'react-icons/fa'
 import ContextMenu from './ContextMenu'
 import PhotoPicker from './PhotoPicker'
 import PhotoLibrary from './PhotoLibrary'
+import CapturePhoto from './CapturePhoto'
 
 
 
@@ -14,6 +15,7 @@ const Avatar = ({ type, image, setImage }) => {
     const [contextMenuCordinates, setContextMenuCordinates] = useState({ x: 0, y: 0 })
     const [grabPhoto, setGrabPhoto] = useState(false)
     const [showPhotoLibrary, setShowPhotoLibrary] = useState(false)
+    const [showCapturePhoto, setShowCapturePhoto] = useState(false)
 
     const showContextMenu = (e) => {
         e.preventDefault()
@@ -22,13 +24,9 @@ const Avatar = ({ type, image, setImage }) => {
     }
 
     const contextMenuOptions = [
-        { name: 'Take Photo', callback: () => { } },
-        { name: 'Choose From Library', callback: () => { setShowPhotoLibrary(true)} },
-        {
-            name: 'Upload Photo', callback: () => {
-                setGrabPhoto(true)
-            }
-        },
+        { name: 'Take Photo', callback: () => { setShowCapturePhoto(true) } },
+        { name: 'Choose From Library', callback: () => { setShowPhotoLibrary(true) } },
+        { name: 'Upload Photo', callback: () => { setGrabPhoto(true) } },
         { name: 'Remove Photo', callback: () => { setImage('/default_avatar.png') } },
     ]
 
@@ -116,11 +114,17 @@ const Avatar = ({ type, image, setImage }) => {
                     setContextMenu={setIsContextMenuVisible}
                 />}
 
+            {/* capture photo from camera */}
+            {showCapturePhoto && <CapturePhoto setImage={setImage} hide={setShowCapturePhoto} />}
+
+            {/* choose photo from library */}
             {showPhotoLibrary &&
                 <PhotoLibrary
                     setImage={setImage}
                     hidePhotoLibrary={setShowPhotoLibrary}
                 />}
+
+            {/* upload photo from local machine */}
             {grabPhoto && <PhotoPicker onChange={photoPickerChange} />}
         </>
     )
