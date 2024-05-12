@@ -10,4 +10,7 @@ datasource db {
 model User {
   id Int @id @map("_id")
   email String @unique
+  name String
+  profileImage String @default("")
+  about String @defalut("")
 }
