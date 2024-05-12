@@ -1,7 +1,7 @@
-
 import { reducerCases } from './constants';
 export const initialState = {
-    userInfo: undefined,
+    // userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null,
+    userInfo: null,
     newUser: false
 }
 
@@ -18,7 +18,7 @@ const reducer = (state, action) => {
                 ...state,
                 newUser: action.newUser
             }
-            
+
         default:
             return state
     }

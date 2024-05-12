@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -13,7 +13,15 @@ import { CHECK_USER_ROUTE } from '@/utils/apiRoutes'
 const Login = () => {
 
     const router = useRouter()
-    const [{ }, dispatch] = useStateProvider()
+    const [{ userInfo, newUser }, dispatch] = useStateProvider()
+
+    // if there is ID and not newuser then redirect to chat page ('/' page)  
+    useEffect(() => {
+        console.log({ userInfo, newUser })
+        if (userInfo?.id && !newUser) {
+            router.push('/')
+        }
+    }, [userInfo, newUser])
 
     const handleLogin = async () => {
         const provider = new GoogleAuthProvider
@@ -28,9 +36,19 @@ const Login = () => {
                 dispatch({ type: reducerCases.SET_NEW_USER, newUser: true })
                 dispatch({
                     type: reducerCases.SET_USER_INFO,
-                    userInfo: { name, email, profileImage, status: '' }
+                    userInfo: { name, email, profileImage, about: '' }
                 });
                 router.push('/onboarding')
+            }
+            else {
+                // console.log("data = ", data.data)
+                const { id, name, email, profileImage, about } = data.data
+                dispatch({
+                    type: reducerCases.SET_USER_INFO,
+                    userInfo: { id, name, email, profileImage, about }
+                })
+                localStorage.setItem('userInfo', JSON.stringify({ id, name, email, profileImage, about }))
+                router.push('/')
             }
         } catch (error) {
             console.log("Error while checking user register or not 🔴🔴 = ", error)
