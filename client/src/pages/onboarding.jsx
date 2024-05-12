@@ -1,14 +1,15 @@
-import {useState} from 'react'
-import Input from "@/components/common/Input"
+import { useState } from 'react'
 import { useStateProvider } from "@/context/stateContext"
 import Image from "next/image"
+import Input from "@/components/common/Input"
+import Avatar from "@/components/common/Avatar"
 
 const onboarding = () => {
 
     const [{ userInfo },] = useStateProvider()
     const [name, setName] = useState(userInfo?.name || '')
     const [about, setAbout] = useState('')
-    const [image, setImage] = useState('/default_avatar.png')
+    const [image, setImage] = useState(userInfo?.profileImage || '/default_avatar.png')
 
     return (
         <div className='bg-panel-header-background h-screen w-screen text-white flex-center flex-col'>
@@ -39,6 +40,9 @@ const onboarding = () => {
                         setState={setAbout}
                     />
                 </div>
+
+                {/* avatar */}
+                <Avatar type={'xl'} image={image} setImage={setImage} />
             </div>
         </div>
     )
