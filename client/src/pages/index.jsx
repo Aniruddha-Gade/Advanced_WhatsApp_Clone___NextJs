@@ -1,11 +1,8 @@
 import React from 'react'
+import Main from './Main';
 
 const index = () => {
-    return (
-        <div className='text-7xl bg-green-600 p-5 rounded-2xl'>
-            WhatsApp Clone 
-        </div>
-    )
+    return <Main />
 }
 
 export default index
