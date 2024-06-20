@@ -9,6 +9,7 @@ import { useStateProvider } from '@/context/stateContext'
 
 import { CHECK_USER_ROUTE } from '@/utils/apiRoutes'
 import { firebaseAuth } from '@/utils/firebaseConfig'
+import Chat from '@/components/chat/Chat'
 
 const Main = () => {
 
@@ -42,7 +43,8 @@ const Main = () => {
         <>
             <div className='grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden '>
                 <ChatList />
-                <Empty />
+                {/* <Empty /> */}
+                <Chat />
             </div>
         </>
     )
