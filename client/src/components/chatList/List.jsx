@@ -2,7 +2,9 @@ import React from 'react'
 
 const List = () => {
   return (
-    <div>List</div>
+    <div className='bg-search-input-container-background flex-auto overflow-auto custom-scrollbar'>
+      
+    </div>
   )
 }
 
