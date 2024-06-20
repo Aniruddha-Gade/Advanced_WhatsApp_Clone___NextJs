@@ -13,7 +13,7 @@ const SearchBar = () => {
         </div>
 
         {/* search input */}
-        <div>
+        <div className='w-full'>
           <input
             type='text'
             placeholder='Search or start new chat'
