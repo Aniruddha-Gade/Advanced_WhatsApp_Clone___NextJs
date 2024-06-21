@@ -72,3 +72,46 @@ exports.onBoardUser = async (req, res) => {
         })
     }
 }
+
+
+
+// =============== get all Users ===============
+exports.getAllUsers = async (req, res) => {
+    try {
+        const prisma = getPrismaInstance()
+        const allUsers = await prisma.user.findMany({
+            orderBy: { name: 'asc' },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                profileImage: true,
+                about: true,
+            }
+        });
+
+        const usersGroupedByInitialLetter = {}
+
+        allUsers.forEach((user) => {
+            const firstLetter = user.name.charAt(0).toUpperCase();
+            if (!usersGroupedByInitialLetter[firstLetter]) {
+                usersGroupedByInitialLetter[firstLetter] = []
+            }
+            usersGroupedByInitialLetter[firstLetter].push(user)
+        })
+
+        return res.status(200).json({
+            users: usersGroupedByInitialLetter,
+            message: 'All users data fetch successfully'
+        })
+
+    } catch (error) {
+        console.log('Error while fetching all users data')
+        console.log(error)
+        return res.status().json({
+            status: false,
+            messgae: 'Error while fetching all users data',
+            error: error.message
+        })
+    }
+}

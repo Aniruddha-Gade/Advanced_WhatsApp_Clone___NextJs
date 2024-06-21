@@ -16,6 +16,7 @@ module.exports = {
         "primary-strong": "#e9edef",
         "panel-header-background": "#202c33",
         "panel-header-icon": "#aebac1",
+        "panel-header-icon-hover": "#e6f1f8",
         "icon-lighter": "#8696a0",
         "icon-green": "#00a884",
         "search-input-container-background": "#111b21",
