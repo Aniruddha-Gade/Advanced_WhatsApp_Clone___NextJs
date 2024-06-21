@@ -1,5 +1,6 @@
 import React from 'react'
 import Avatar from '../common/Avatar'
+import { useStateProvider } from '@/context/stateContext'
 
 // icons
 import { MdCall } from 'react-icons/md'
@@ -8,17 +9,21 @@ import { BiSearchAlt2 } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
 
 const ChatHeader = () => {
+
+  const [{ userInfo, currentChatUser },] = useStateProvider();
+  console.log("current Chat User from MAIN CHAT ", currentChatUser)
+
   return (
     <div className='bg-panel-header-background h-16 px-4 py-3 z-10 flex justify-between items-center'>
       <div className="flex-center gap-6">
         {/* user profile image */}
         <Avatar
           type='sm'
-          image={'/profile'}
+          image={currentChatUser?.profileImage}
         />
         {/* user name and online/offline status */}
         <div className="flex flex-col">
-          <span className="text-primary-strong">Demo username</span>
+          <span className="text-primary-strong">{currentChatUser?.name}</span>
           <span className="text-secondary text-sm">
             online
           </span>

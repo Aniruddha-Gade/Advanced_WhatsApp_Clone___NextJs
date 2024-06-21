@@ -3,7 +3,8 @@ export const initialState = {
     // userInfo: localStorage.getItem("userInfo") ? JSON.parse(localStorage.getItem("userInfo")) : null,
     userInfo: null,
     newUser: false,
-    contactsPage: false
+    contactsPage: false,
+    currentChatUser: null,
 }
 
 const reducer = (state, action) => {
@@ -24,6 +25,12 @@ const reducer = (state, action) => {
             return {
                 ...state,
                 contactsPage: !state.contactsPage
+            }
+
+        case reducerCases.CHANGE_CURRENT_CHAT_USER:
+            return {
+                ...state,
+                currentChatUser: action.user
             }
 
         default:
