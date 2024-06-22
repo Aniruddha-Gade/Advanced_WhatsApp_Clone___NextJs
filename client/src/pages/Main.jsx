@@ -47,9 +47,11 @@ const Main = () => {
     useEffect(() => {
         const getMessages = async () => {
             try {
-                const { data } = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo.id}/${currentChatUser.id}`)
-                console.log("GET MESSAGE RESPONSE => ", data)
+                const { data: { messages } } = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo.id}/${currentChatUser.id}`)
+                console.log("GET MESSAGE RESPONSE => ", messages)
 
+                // set message to context
+                dispatch({ type: reducerCases.SET_MESSAGES, messages })
             } catch (error) {
                 console.log("GET MESSAGE RESPONSE ERROR => ", error)
             }
