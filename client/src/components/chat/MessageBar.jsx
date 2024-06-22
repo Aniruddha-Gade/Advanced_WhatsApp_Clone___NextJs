@@ -15,14 +15,17 @@ const MessageBar = () => {
   const [message, setMessage] = useState("")
 
   const sendMessage = async () => {
-    console.log("{ userInfo, currentChatUser } ", { userInfo, currentChatUser })
+    // console.log("{ userInfo, currentChatUser } ", { userInfo, currentChatUser })
     try {
+      if (!message) return;
+
       const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
         message,
         from: userInfo.id,
         to: currentChatUser.id
       })
       console.log("Message stored response => ", data)
+      setMessage("")
     } catch (error) {
       console.log("Error while storing message")
     }
