@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 import axios from 'axios'
+import { useRouter } from 'next/router'
+import { firebaseAuth } from '@/utils/firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
+
+import { useStateProvider } from '@/context/stateContext'
+import { reducerCases } from '@/context/constants'
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from '@/utils/apiRoutes'
+
 import ChatList from '@/components/chatList/ChatList'
 import Empty from '@/components/Empty'
-import { reducerCases } from '@/context/constants'
-import { useStateProvider } from '@/context/stateContext'
-
-import { CHECK_USER_ROUTE } from '@/utils/apiRoutes'
-import { firebaseAuth } from '@/utils/firebaseConfig'
 import Chat from '@/components/chat/Chat'
+
 
 const Main = () => {
 
@@ -39,6 +41,25 @@ const Main = () => {
     }, [redirectLogin])
 
     // console.log("from Main component = ", currentChatUser)
+
+
+    // get messages as soons as there is a new current-chat-user
+    useEffect(() => {
+        const getMessages = async () => {
+            try {
+                const { data } = await axios.get(`${GET_MESSAGES_ROUTE}/${userInfo.id}/${currentChatUser.id}`)
+                console.log("GET MESSAGE RESPONSE => ", data)
+
+            } catch (error) {
+                console.log("GET MESSAGE RESPONSE ERROR => ", error)
+            }
+        }
+        if (currentChatUser?.id) {
+            getMessages()
+        }
+    }, [currentChatUser])
+
+
 
     return (
         <>
