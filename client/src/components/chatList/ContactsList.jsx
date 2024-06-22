@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { reducerCases } from '@/context/constants'
 import { useStateProvider } from '@/context/stateContext'
-import { GET_ALL_CONTACTS } from '@/utils/apiRoutes'
+import { GET_ALL_CONTACTS_ROUTE } from '@/utils/apiRoutes'
 
 import { BiArrowBack, BiSearchAlt2 } from 'react-icons/bi'
 import ChatListItem from './ChatListItem'
@@ -16,7 +16,7 @@ const ContactsList = () => {
   useEffect(() => {
     const getAllContacts = async () => {
       try {
-        const { data: { users } } = await axios.get(GET_ALL_CONTACTS)
+        const { data: { users } } = await axios.get(GET_ALL_CONTACTS_ROUTE)
         setAllContacts(users)
         console.log("GET_ALL_CONTACTS API RESPONSE... ", users)
       } catch (error) {

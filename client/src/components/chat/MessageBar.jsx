@@ -1,16 +1,32 @@
 import React, { useState } from 'react'
+import axios from 'axios'
+import { useStateProvider } from '@/context/stateContext'
+import { ADD_MESSAGE_ROUTE } from './../../utils/apiRoutes';
+
+// icons
 import { BsEmojiSmile } from 'react-icons/bs'
 import { ImAttachment } from 'react-icons/im'
 import { MdSend } from 'react-icons/md'
 import { FaMicrophone } from 'react-icons/fa'
-import { useStateProvider } from '@/context/stateContext'
 
 const MessageBar = () => {
 
   const [{ userInfo, currentChatUser }, dispatch] = useStateProvider()
-  const [message, setMessage] = useState()
-  const sendMessage = () => {
-   
+  const [message, setMessage] = useState("")
+
+  const sendMessage = async () => {
+    console.log("{ userInfo, currentChatUser } ", { userInfo, currentChatUser })
+    try {
+      const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
+        message,
+        from: userInfo.id,
+        to: currentChatUser.id
+      })
+      console.log("Message stored response => ", data)
+    } catch (error) {
+      console.log("Error while storing message")
+    }
+
   }
 
   return (

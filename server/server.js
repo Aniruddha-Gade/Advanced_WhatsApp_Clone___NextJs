@@ -3,6 +3,7 @@ const dotenv = require('dotenv')
 const cors = require('cors')
 
 const AuthRoutes = require('./routes/authRoutes')
+const MessageRoutes = require('./routes/messageRoutes')
 
 dotenv.config()
 const app = express();
@@ -22,10 +23,11 @@ app.use(
 
 // mount route
 app.use('/api/auth', AuthRoutes)
+app.use("/api/messages", MessageRoutes)
 
 
 // start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server Started on PORT ${PORT}`);
 });
 
@@ -38,3 +40,7 @@ app.get('/', (req, res) => {
     <p>Everything is OK</p>
     </div>`);
 })
+
+
+// sockets 
+global.onlineUsers = new Map()
