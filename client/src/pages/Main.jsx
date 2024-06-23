@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { firebaseAuth } from '@/utils/firebaseConfig'
 import { onAuthStateChanged } from 'firebase/auth'
+import { io } from 'socket.io-client'
 
 import { useStateProvider } from '@/context/stateContext'
 import { reducerCases } from '@/context/constants'
-import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE } from '@/utils/apiRoutes'
+import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from '@/utils/apiRoutes'
 
 import ChatList from '@/components/chatList/ChatList'
 import Empty from '@/components/Empty'
@@ -18,6 +19,8 @@ const Main = () => {
     const router = useRouter()
     const [{ userInfo, currentChatUser }, dispatch] = useStateProvider()
     const [redirectLogin, setRedirectLogin] = useState(false)
+    const socket = useRef()
+    const [socketEvent, setSocketEvent] = useState(false)
 
     // firebase auth state change
     onAuthStateChanged(firebaseAuth, async (currentUser) => {
@@ -62,6 +65,29 @@ const Main = () => {
     }, [currentChatUser])
 
 
+    // store socket to context
+    useEffect(() => {
+        if (userInfo) {
+            socket.current = io(HOST)
+            socket.current.emit("add-user", userInfo.id)
+            dispatch({ type: reducerCases.SET_SOCKET, socket })
+        }
+    }, [userInfo])
+
+
+    // sets up a one-time event listener for incoming messages via socket,
+    // dispatching each new received message to the state.
+    useEffect(() => {
+        if (socket.current && !socketEvent) {
+            socket.current.on("msg-receive", (data) => {
+                dispatch({
+                    type: reducerCases.ADD_MESSAGE,
+                    newMessage: { ...data.message }
+                })
+            })
+            setSocketEvent(true)
+        }
+    }, [socket.current])
 
     return (
         <>

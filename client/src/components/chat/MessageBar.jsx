@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import axios from 'axios'
+
 import { useStateProvider } from '@/context/stateContext'
 import { ADD_MESSAGE_ROUTE } from './../../utils/apiRoutes';
+import { reducerCases } from '@/context/constants';
 
 // icons
 import { BsEmojiSmile } from 'react-icons/bs'
@@ -11,7 +13,7 @@ import { FaMicrophone } from 'react-icons/fa'
 
 const MessageBar = () => {
 
-  const [{ userInfo, currentChatUser }, dispatch] = useStateProvider()
+  const [{ userInfo, currentChatUser, socket }, dispatch] = useStateProvider()
   const [message, setMessage] = useState("")
 
   const sendMessage = async () => {
@@ -19,15 +21,32 @@ const MessageBar = () => {
     try {
       if (!message) return;
 
+      // store msg to database
       const { data } = await axios.post(ADD_MESSAGE_ROUTE, {
         message,
         from: userInfo.id,
         to: currentChatUser.id
       })
+
+      // 
+      socket.current.emit("send-msg", {
+        message: data.newMessage,
+        from: userInfo.id,
+        to: currentChatUser.id
+      })
+
+      // save current sent mesg to context
+      dispatch({
+        type: reducerCases.ADD_MESSAGE,
+        newMessage: { ...data.newMessage },
+        fromSelf: true
+      })
+
+
       console.log("Message stored response => ", data)
       setMessage("")
     } catch (error) {
-      console.log("Error while storing message")
+      console.log("Error while storing message => ", error)
     }
 
   }
