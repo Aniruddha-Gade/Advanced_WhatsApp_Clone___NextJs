@@ -29,6 +29,7 @@ const Main = () => {
             const { data } = await axios.post(CHECK_USER_ROUTE, { email: currentUser.email })
             if (!data.status) {
                 router.push('/login')
+                return
             }
 
             const { id, name, email, profileImage, about } = data.data
