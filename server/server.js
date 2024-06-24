@@ -20,7 +20,8 @@ app.use(
     })
 );
 
-
+// to upload image msg 
+app.use("/uploads/images", express.static("uploads/images"))
 
 // mount route
 app.use('/api/auth', AuthRoutes)

@@ -1,10 +1,11 @@
-import React, { useRef, useState,useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import axios from 'axios'
 import EmojiPicker from 'emoji-picker-react';
 
 import { useStateProvider } from '@/context/stateContext'
-import { ADD_MESSAGE_ROUTE } from './../../utils/apiRoutes';
+import { ADD_IMAGE_MESSAGE_ROUTE, ADD_MESSAGE_ROUTE } from './../../utils/apiRoutes';
 import { reducerCases } from '@/context/constants';
+import PhotoPicker from '../common/PhotoPicker';
 
 // icons
 import { BsEmojiSmile } from 'react-icons/bs'
@@ -19,6 +20,8 @@ const MessageBar = () => {
   const [message, setMessage] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const emojiPickerRef = useRef(null)
+  const [grabPhoto, setGrabPhoto] = useState(false)
+
 
   // send message
   const sendMessage = async () => {
@@ -74,6 +77,66 @@ const MessageBar = () => {
     return () => document.removeEventListener('click', handleOutsideClick)
   }, [])
 
+
+  // upload image message to database and sned via socket
+  const photoPickerChange = async (e) => {
+    try {
+      const file = e.target.files[0]
+      console.log("image file => ", file)
+
+      // save to database
+      const formData = new FormData()
+      formData.append('image', file)
+      const response = await axios.post(ADD_IMAGE_MESSAGE_ROUTE, formData, {
+        headers: {
+          'content-Type': 'multipart/form-data'
+        },
+        params: {
+          from: userInfo.id,
+          to: currentChatUser.id
+        }
+      })
+
+      console.log("ADD_IMAGE_MESSAGE_ROUTE RESPONSE ===> ", response)
+
+      // send image message via socket
+      if (response.status === 201) {
+        socket.current.emit("send-msg", {
+          message: response.data.newMessage,
+          from: userInfo.id,
+          to: currentChatUser.id
+        })
+
+        // save current sent img mesg to context
+        dispatch({
+          type: reducerCases.ADD_MESSAGE,
+          newMessage: { ...response.data.newMessage },
+          fromSelf: true
+        })
+      }
+    } catch (error) {
+      console.log("Error while saving image message to database")
+    }
+    setGrabPhoto(false);
+  }
+
+
+  // to close file select modal
+  useEffect(() => {
+    if (grabPhoto) {
+      const data = document.getElementById('photo-picker')
+      data.click()
+      document.body.focus = (e) => {
+        setTimeout(() => {
+          setGrabPhoto(false)
+        }, 1000)
+      }
+    }
+  }, [grabPhoto])
+
+  console.log('grabPhoto = ', grabPhoto)
+
+
   return (
     <div className='h-20 flex items-center gap-6 relative bg-panel-header-background px-4 '>
       <>
@@ -95,6 +158,7 @@ const MessageBar = () => {
           }
 
           <ImAttachment
+            onClick={() => setGrabPhoto(true)}
             className='text-panel-header-icon text-xl cursor-pointer hover:text-panel-header-icon-hover active:scale-90'
             title='Attach File'
           />
@@ -122,6 +186,8 @@ const MessageBar = () => {
           /> */}
         </div>
       </>
+
+      {grabPhoto && <PhotoPicker onChange={photoPickerChange} />}
     </div>
   )
 }

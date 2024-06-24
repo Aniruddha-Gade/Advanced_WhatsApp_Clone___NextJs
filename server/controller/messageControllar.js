@@ -1,4 +1,6 @@
 const getPrismaInstance = require("../utils/prismaClient")
+const { renameSync } = require('fs')
+
 
 // =============== Add Message ===============
 exports.addMessage = async (req, res) => {
@@ -97,6 +99,57 @@ exports.getMessages = async (req, res) => {
         return res.status().json({
             status: false,
             messgae: 'Error while geting all messages',
+            error: error.message
+        })
+    }
+}
+
+
+// =============== Upload Image Message ===============
+exports.uploadImageMessage = async (req, res) => {
+    try {
+        const { from, to } = req.query
+        // console.log({ from, to })
+
+        if (!req.file) {
+            return res.status(400).json({
+                message: 'Image is required',
+            })
+        }
+
+        if (!from || !to) {
+            return res.status(400).json({
+                message: "Both 'from , to' are required",
+            })
+        }
+
+
+        const date = Date.now()
+        const fileName = 'uploads/images/' + date + req.file.originalname
+        renameSync(req.file.path, fileName)
+
+
+        const prisma = getPrismaInstance()
+        const message = await prisma.message.create({
+            data: {
+                message: fileName,
+                sender: { connect: { id: from } },
+                receiver: { connect: { id: to } },
+                type: 'image'
+            }
+        })
+        // console.log("Image message = ", message)
+        return res.status(201).json({
+            newMessage: message,
+            message: 'Image message saved successfully',
+        })
+
+    } catch (error) {
+        console.log('Error while uploading image message')
+        console.log(error)
+        return res.status().json({
+            status: false,
+            messgae: 'Error while uploading image message',
             error: error.message
         })
     }

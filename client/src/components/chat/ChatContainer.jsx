@@ -2,11 +2,12 @@ import { useStateProvider } from '@/context/stateContext'
 import { calculateTime } from '@/utils/calculateTime'
 import React from 'react'
 import MessageStatus from '../common/MessageStatus'
+import ImageMessage from './ImageMessage';
 
 const ChatContainer = () => {
 
   const [{ messages, userInfo, currentChatUser },] = useStateProvider()
-  console.log("messages from chat container = ", messages)
+  // console.log("messages from chat container = ", messages)
 
 
 
@@ -27,32 +28,32 @@ const ChatContainer = () => {
                   key={message.id}
                   className={`flex ${message.senderId == currentChatUser.id ? 'justify-start' : 'justify-end'}`}
                 >
-                  {/* {
+                  {/* if message is text */}
+                  {
                     message.type === 'text' && (
-                      <div className={`text-white px-5 py-[5px] text-sm rounded-md flex gap-2 items-end max-w-[45%]
+                      <div className={`text-white px-3 py-[5px] text-sm rounded-md flex gap-2 items-end max-w-[45%]
                             ${message.senderId === currentChatUser.id ? 'bg-incoming-background' : 'bg-outgoing-background'}`}
                       >
-                        <span className=''>{message.message}</span>
+                        <span className='break-all'>{message.message}</span>
+                        <div className='flex gap-1 items-end'>
+                          <span className='text-bubble-meta text-[11px] pt-1 min-w-fit '>
+                            {calculateTime(message.createdAt)}
+                          </span>
+                          <span>
+                            {
+                              message.senderId === userInfo.id
+                              && <MessageStatus messageStatus={message.messageStatus} />
+                            }
+                          </span>
+                        </div>
                       </div>
                     )
-                  } */}
+                  }
 
-                  <div className={`text-white px-3 py-[5px] text-sm rounded-md flex gap-2 items-end max-w-[45%]
-                            ${message.senderId === currentChatUser.id ? 'bg-incoming-background' : 'bg-outgoing-background'}`}
-                  >
-                    <span className='break-all'>{message.message}</span>
-                    <div className='flex gap-1 items-end'>
-                      <span className='text-bubble-meta text-[11px] pt-1 min-w-fit '>
-                        {calculateTime(message.createdAt)}
-                      </span>
-                      <span>
-                        {
-                          message.senderId === userInfo.id
-                          && <MessageStatus messageStatus={message.messageStatus} />
-                        }
-                      </span>
-                    </div>
-                  </div>
+                  {/* if message is image */}
+                  {
+                    message.type === 'image' && <ImageMessage message={message} />
+                  }
                 </div>
               ))
             }
