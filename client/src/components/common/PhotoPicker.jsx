@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 const PhotoPicker = ({ onChange }) => {
 
   const component = (
-    <input type='file'  id='photo-picker' onChange={onChange} />
+    <input type='file' hidden id='photo-picker' onChange={onChange} />
   )
 
   return ReactDOM.createPortal(
