@@ -43,6 +43,7 @@ const Avatar = ({ type, image, setImage }) => {
             setImage(data.src)
         }, 100)
         console.log('data.src = ', data.src)
+        setGrabPhoto(false);
     }
     // console.log('image = ', image)
 
