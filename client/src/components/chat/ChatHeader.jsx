@@ -7,10 +7,11 @@ import { MdCall } from 'react-icons/md'
 import { IoVideocam } from 'react-icons/io5'
 import { BiSearchAlt2 } from 'react-icons/bi'
 import { BsThreeDotsVertical } from 'react-icons/bs'
+import { reducerCases } from '@/context/constants'
 
 const ChatHeader = () => {
 
-  const [{ userInfo, currentChatUser },] = useStateProvider();
+  const [{ userInfo, currentChatUser }, dispatch] = useStateProvider();
   console.log("current Chat User from MAIN CHAT ", currentChatUser)
 
   return (
@@ -32,10 +33,23 @@ const ChatHeader = () => {
 
       {/* icons */}
       <div className='flex gap-6'>
-        <MdCall className='text-panel-header-icon cursor-pointer text-xl' />
-        <IoVideocam className='text-panel-header-icon cursor-pointer text-xl' />
-        <BiSearchAlt2 className='text-panel-header-icon cursor-pointer text-xl' />
-        <BsThreeDotsVertical className='text-panel-header-icon cursor-pointer text-xl' />
+        <MdCall
+          className='text-panel-header-icon text-xl cursor-pointer hover:text-panel-header-icon-hover active:scale-90'
+         title='Call'
+        />
+        <IoVideocam
+         className='text-panel-header-icon text-xl cursor-pointer hover:text-panel-header-icon-hover active:scale-90'
+          title='Video Call'
+        />
+        <BiSearchAlt2
+          onClick={() => dispatch({ type: reducerCases.SET_MESSAGE_SEARCH })}
+          className='text-panel-header-icon text-xl cursor-pointer hover:text-panel-header-icon-hover active:scale-90'
+          title='search message'
+        />
+        <BsThreeDotsVertical
+          className='text-panel-header-icon text-xl cursor-pointer hover:text-panel-header-icon-hover active:scale-90'
+          title='search message'
+        />
       </div>
 
     </div>

@@ -12,12 +12,13 @@ import { CHECK_USER_ROUTE, GET_MESSAGES_ROUTE, HOST } from '@/utils/apiRoutes'
 import ChatList from '@/components/chatList/ChatList'
 import Empty from '@/components/Empty'
 import Chat from '@/components/chat/Chat'
+import SearchMessages from '@/components/chat/SearchMessages'
 
 
 const Main = () => {
 
     const router = useRouter()
-    const [{ userInfo, currentChatUser }, dispatch] = useStateProvider()
+    const [{ userInfo, currentChatUser, messagesSearch }, dispatch] = useStateProvider()
     const [redirectLogin, setRedirectLogin] = useState(false)
     const socket = useRef()
     const [socketEvent, setSocketEvent] = useState(false)
@@ -94,7 +95,17 @@ const Main = () => {
         <>
             <div className='grid grid-cols-main h-screen w-screen max-h-screen max-w-full overflow-hidden '>
                 <ChatList />
-                {currentChatUser ? <Chat /> : <Empty />}
+                {
+                    currentChatUser ? (
+                        <div className={`${messagesSearch ? 'grid grid-cols-2' : 'grid-cols-2'}  `}>
+                            <Chat />
+                            {console.log('messagesSearch = ', messagesSearch)}
+                            {messagesSearch && <SearchMessages />}
+                        </div>
+                    )
+                        : <Empty />
+                }
+
             </div>
         </>
     )
